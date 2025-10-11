@@ -32,21 +32,13 @@ func UploadHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	defer file.Close()
 
-	root, err := os.OpenRoot("uploads")
-	if err != nil {
-		http.Error(w, "внутренняя ошибка", http.StatusInternalServerError)
-		return
-	}
-	defer root.Close()
-
 	data, err := os.ReadFile(handler.Filename)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	result := service.Convert(string(data))
-
-	newFileName := root.Name() + "/" + time.Now().UTC().String() + filepath.Ext(handler.Filename)
+	newFileName := time.Now().UTC().String() + filepath.Ext(handler.Filename)
 
 	if err := os.WriteFile(newFileName, []byte(result), 0755); err != nil {
 		log.Fatal(err)
