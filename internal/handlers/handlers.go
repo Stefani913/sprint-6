@@ -35,6 +35,8 @@ func UploadHandler(w http.ResponseWriter, req *http.Request) {
 	data, err := os.ReadFile(handler.Filename)
 	if err != nil {
 		log.Fatal(err)
+		http.Error(w, "внутренняя ошибка", http.StatusInternalServerError)
+		return
 	}
 
 	result := service.Convert(string(data))
@@ -45,4 +47,6 @@ func UploadHandler(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "внутренняя ошибка", http.StatusInternalServerError)
 		return
 	}
+
+	w.Write([]byte(result))
 }
