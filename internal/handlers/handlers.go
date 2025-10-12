@@ -41,7 +41,7 @@ func UploadHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	defer openedFile.Close()
 
-	data, err := os.ReadFile(openedFile.Name())
+	data, err := os.ReadFile(handler.Filename)
 	if err != nil {
 		log.Fatal(err)
 		http.Error(w, "внутренняя ошибка", http.StatusInternalServerError)
@@ -49,8 +49,8 @@ func UploadHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if string(data) == "" {
-		log.Fatal("EMPTY DATA STRING")
-		http.Error(w, "внутренняя ошибка", http.StatusInternalServerError)
+		log.Fatal("Файл не должен быть пустым")
+		http.Error(w, "получен пустой файл", http.StatusInternalServerError)
 		return
 	}
 
