@@ -39,27 +39,12 @@ func UploadHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	defer file.Close()
 
-	/*openedFile, err := os.OpenFile(handler.Filename, os.O_RDWR|os.O_CREATE, 0644)
-	if err != nil {
-		log.Fatal(err)
-		http.Error(w, "ошибка при получении файла", http.StatusBadRequest)
-		return
-	}
-	defer openedFile.Close()*/
-
 	data, err := io.ReadAll(file)
 	if err != nil {
 		log.Fatal(err)
-		http.Error(w, "Error reading file content", http.StatusInternalServerError)
+		http.Error(w, "ошибка чтения файла", http.StatusInternalServerError)
 		return
 	}
-
-	/*data, err := os.ReadFile(handler.Filename)
-	if err != nil {
-		log.Fatal(err)
-		http.Error(w, "внутренняя ошибка", http.StatusInternalServerError)
-		return
-	}*/
 
 	if string(data) == "" {
 		log.Fatal("Файл не должен быть пустым")
