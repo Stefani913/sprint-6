@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -22,7 +23,12 @@ func HandleMain(res http.ResponseWriter, req *http.Request) {
 }
 
 func UploadHandler(w http.ResponseWriter, req *http.Request) {
-	req.ParseMultipartForm(10 << 20)
+	if err := req.ParseMultipartForm(10 << 20); err != nil {
+		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	fileName := "myFile"
 
 	file, handler, err := req.FormFile(fileName)
@@ -41,12 +47,19 @@ func UploadHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	defer openedFile.Close()*/
 
-	data, err := os.ReadFile(handler.Filename)
+	data, err := io.ReadAll(file)
+	if err != nil {
+		log.Fatal(err)
+		http.Error(w, "Error reading file content", http.StatusInternalServerError)
+		return
+	}
+
+	/*data, err := os.ReadFile(handler.Filename)
 	if err != nil {
 		log.Fatal(err)
 		http.Error(w, "внутренняя ошибка", http.StatusInternalServerError)
 		return
-	}
+	}*/
 
 	if string(data) == "" {
 		log.Fatal("Файл не должен быть пустым")
