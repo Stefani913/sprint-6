@@ -27,6 +27,7 @@ func UploadHandler(w http.ResponseWriter, req *http.Request) {
 
 	file, handler, err := req.FormFile(fileName)
 	if err != nil {
+		log.Fatal(err)
 		http.Error(w, "ошибка при получении файла", http.StatusBadRequest)
 		return
 	}
