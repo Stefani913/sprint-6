@@ -27,7 +27,6 @@ func UploadHandler(w http.ResponseWriter, req *http.Request) {
 
 	file, handler, err := req.FormFile(fileName)
 	if err != nil {
-		log.Fatal("req.FormFile")
 		log.Fatal(err)
 		http.Error(w, "ошибка при получении файла", http.StatusBadRequest)
 		return
@@ -36,7 +35,6 @@ func UploadHandler(w http.ResponseWriter, req *http.Request) {
 
 	openedFile, err := os.OpenFile(handler.Filename, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
-		log.Fatal("os.Open " + handler.Filename)
 		log.Fatal(err)
 		http.Error(w, "ошибка при получении файла", http.StatusBadRequest)
 		return
@@ -45,7 +43,6 @@ func UploadHandler(w http.ResponseWriter, req *http.Request) {
 
 	data, err := os.ReadFile(openedFile.Name())
 	if err != nil {
-		log.Fatal("os.ReadFile " + openedFile.Name())
 		log.Fatal(err)
 		http.Error(w, "внутренняя ошибка", http.StatusInternalServerError)
 		return
@@ -54,7 +51,7 @@ func UploadHandler(w http.ResponseWriter, req *http.Request) {
 	result := service.Convert(string(data))
 	newFileName := time.Now().UTC().String() + filepath.Ext(handler.Filename)
 
-	if err := os.WriteFile(newFileName, []byte(result), 0755); err != nil {
+	if err := os.WriteFile(newFileName, []byte(result), 0644); err != nil {
 		log.Fatal(err)
 		http.Error(w, "внутренняя ошибка", http.StatusInternalServerError)
 		return
