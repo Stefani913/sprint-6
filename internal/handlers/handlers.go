@@ -22,7 +22,7 @@ func HandleMain(res http.ResponseWriter, req *http.Request) {
 }
 
 func UploadHandler(w http.ResponseWriter, req *http.Request) {
-	req.ParseMultipartForm(10 << 20)
+	req.ParseMultipartForm(10 << 30)
 	fileName := "myFile"
 
 	file, handler, err := req.FormFile(fileName)
@@ -34,18 +34,18 @@ func UploadHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	defer file.Close()
 
-	openedFile, err := os.Open(handler.Filename)
+	/*openedFile, err := os.Open(handler.Filename)
 	if err != nil {
 		log.Fatal("os.Open " + handler.Filename)
 		log.Fatal(err)
 		http.Error(w, "ошибка при получении файла", http.StatusBadRequest)
 		return
 	}
-	defer openedFile.Close()
+	defer openedFile.Close()*/
 
-	data, err := os.ReadFile(openedFile.Name())
+	data, err := os.ReadFile(handler.Filename)
 	if err != nil {
-		log.Fatal("os.ReadFile " + openedFile.Name())
+		log.Fatal("os.ReadFile " + handler.Filename)
 		log.Fatal(err)
 		http.Error(w, "внутренняя ошибка", http.StatusInternalServerError)
 		return
