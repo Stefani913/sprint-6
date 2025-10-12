@@ -34,18 +34,18 @@ func UploadHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	defer file.Close()
 
-	/*openedFile, err := os.Open(handler.Filename)
+	openedFile, err := os.OpenFile(handler.Filename, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		log.Fatal("os.Open " + handler.Filename)
 		log.Fatal(err)
 		http.Error(w, "ошибка при получении файла", http.StatusBadRequest)
 		return
 	}
-	defer openedFile.Close()*/
+	defer openedFile.Close()
 
-	data, err := os.ReadFile(handler.Filename)
+	data, err := os.ReadFile(openedFile.Name())
 	if err != nil {
-		log.Fatal("os.ReadFile " + handler.Filename)
+		log.Fatal("os.ReadFile " + openedFile.Name())
 		log.Fatal(err)
 		http.Error(w, "внутренняя ошибка", http.StatusInternalServerError)
 		return
