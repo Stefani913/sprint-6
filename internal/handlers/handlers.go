@@ -22,7 +22,7 @@ func HandleMain(res http.ResponseWriter, req *http.Request) {
 }
 
 func UploadHandler(w http.ResponseWriter, req *http.Request) {
-	req.ParseMultipartForm(10 << 30)
+	req.ParseMultipartForm(10 << 20)
 	fileName := "myFile"
 
 	file, handler, err := req.FormFile(fileName)
@@ -44,6 +44,12 @@ func UploadHandler(w http.ResponseWriter, req *http.Request) {
 	data, err := os.ReadFile(openedFile.Name())
 	if err != nil {
 		log.Fatal(err)
+		http.Error(w, "внутренняя ошибка", http.StatusInternalServerError)
+		return
+	}
+
+	if string(data) == "" {
+		log.Fatal("EMPTY DATA STRING")
 		http.Error(w, "внутренняя ошибка", http.StatusInternalServerError)
 		return
 	}
